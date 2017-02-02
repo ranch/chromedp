@@ -2,8 +2,15 @@
 
 package runner
 
-const (
-	DefaultUserDataTmpDir = `c:\temp`
+import (
+	"fmt"
+	"os"
+)
+
+var (
+	// DefaultUserDataTmpDir is the default directory path for created user
+	// data directories.
+	DefaultUserDataTmpDir = fmt.Sprintf(`%s\AppData\Local\Temp`, os.Getenv("USERPROFILE"))
 )
 
 // KillProcessGroup is a Chrome command line option that will instruct the
