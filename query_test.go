@@ -7,6 +7,7 @@ import (
 
 	"github.com/knq/chromedp/cdp"
 	"github.com/knq/chromedp/cdp/css"
+
 	"github.com/knq/chromedp/cdp/dom"
 	"github.com/knq/chromedp/kb"
 )
@@ -121,9 +122,10 @@ func TestDimensions(t *testing.T) {
 	defer c.Release()
 
 	tests := []struct {
-		sel           string
-		by            QueryOption
-		width, height int64
+		sel    string
+		by     QueryOption
+		width  int64
+		height int64
 	}{
 		{"/html/body/img", BySearch, 239, 239},
 		{"img", ByQueryAll, 239, 239},
@@ -334,9 +336,9 @@ func TestAttributes(t *testing.T) {
 	defer c.Release()
 
 	tests := []struct {
-		sel   string
-		by    QueryOption
-		attrs map[string]string
+		sel string
+		by  QueryOption
+		exp map[string]string
 	}{
 		{`//*[@id="icon-brankas"]`, BySearch,
 			map[string]string{
@@ -372,17 +374,18 @@ func TestAttributes(t *testing.T) {
 			t.Fatalf("test %d got error: %v", i, err)
 		}
 
-		if !reflect.DeepEqual(test.attrs, attrs) {
-			t.Errorf("test %d expected %v, got: %v", i, test.attrs, attrs)
+		if !reflect.DeepEqual(test.exp, attrs) {
+			t.Errorf("test %d expected %v, got: %v", i, test.exp, attrs)
 		}
 	}
 }
 
 func TestSetAttributes(t *testing.T) {
 	tests := []struct {
-		sel             string
-		by              QueryOption
-		addition, attrs map[string]string
+		sel   string
+		by    QueryOption
+		attrs map[string]string
+		exp   map[string]string
 	}{
 		{`//*[@id="icon-brankas"]`, BySearch,
 			map[string]string{"data-url": "brankas"},
@@ -424,7 +427,7 @@ func TestSetAttributes(t *testing.T) {
 		c := testAllocate(t, "image.html")
 		defer c.Release()
 
-		err = c.Run(defaultContext, SetAttributes(test.sel, test.addition, test.by))
+		err = c.Run(defaultContext, SetAttributes(test.sel, test.attrs, test.by))
 		if err != nil {
 			t.Fatalf("test %d got error: %v", i, err)
 		}
@@ -435,8 +438,8 @@ func TestSetAttributes(t *testing.T) {
 			t.Fatalf("test %d got error: %v", i, err)
 		}
 
-		if !reflect.DeepEqual(test.attrs, attrs) {
-			t.Errorf("test %d expected %v, got: %v", i, test.attrs, attrs)
+		if !reflect.DeepEqual(test.exp, attrs) {
+			t.Errorf("test %d expected %v, got: %v", i, test.exp, attrs)
 		}
 	}
 }
@@ -593,6 +596,7 @@ func TestClick(t *testing.T) {
 		}
 	}
 }
+
 func TestDoubleClick(t *testing.T) {
 	c := testAllocate(t, "js.html")
 	defer c.Release()
@@ -640,9 +644,9 @@ func TestSendKeys(t *testing.T) {
 		keys string
 		exp  string
 	}{
-		{`//*[@id="input1"]`, BySearch, "insert ", "insert some value"},
+		{`//*[@id="input1"]`, BySearch, "INSERT ", "INSERT some value"},
 		{`#box4 > input:nth-child(1)`, ByQuery, "insert ", "insert some value"},
-		{`#box4 > textarea`, ByQueryAll, "insert ", "insert textarea"},
+		{`#box4 > textarea`, ByQueryAll, "prefix " + kb.End + "\b\b SUFFIX\n", "prefix textar SUFFIX\n"},
 		{"#textarea1", ByID, "insert ", "insert textarea"},
 		{"#textarea1", ByID, kb.End + "\b\b\n\naoeu\n\nfoo\n\nbar\n\n", "textar\n\naoeu\n\nfoo\n\nbar\n\n"},
 		{"#select1", ByID, kb.ArrowDown + kb.ArrowDown, "three"},
