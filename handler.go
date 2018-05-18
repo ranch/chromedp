@@ -617,6 +617,8 @@ func (h *TargetHandler) pageEvent(ctxt context.Context, ev interface{}) {
 		return
 	case *page.EventLifecycleEvent:
 		return
+	case *page.EventWindowOpen:
+		return
 
 	default:
 		h.errorf("unhandled page event %s", reflect.TypeOf(ev))
