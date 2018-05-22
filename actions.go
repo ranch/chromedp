@@ -72,3 +72,16 @@ func WaitEventLoad() Action {
 		return nil
 	})
 }
+
+func DialogText(text *string) Action {
+	return ActionFunc(func(ctxt context.Context, h cdp.Executor) error {
+		th, ok := h.(*TargetHandler)
+		if !ok {
+			return ErrInvalidHandler
+		}
+		th.Lock()
+		*text = th.dialog
+		th.Unlock()
+		return nil
+	})
+}

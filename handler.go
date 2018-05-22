@@ -31,6 +31,9 @@ type TargetHandler struct {
 	// frames is the set of encountered frames.
 	frames map[cdp.FrameID]*cdp.Frame
 
+	// dialog is message that  will be displayed by the dialog.
+	dialog string
+
 	// cur is the current top level frame.
 	cur *cdp.Frame
 
@@ -618,6 +621,16 @@ func (h *TargetHandler) pageEvent(ctxt context.Context, ev interface{}) {
 	case *page.EventLifecycleEvent:
 		return
 	case *page.EventWindowOpen:
+		return
+	case *page.EventJavascriptDialogOpening:
+		h.Lock()
+		h.dialog = e.Message
+		h.Unlock()
+		if err := page.HandleJavaScriptDialog(true).Do(ctxt, h); err != nil {
+			h.errorf("could not close dialog", err)
+		}
+		return
+	case *page.EventJavascriptDialogClosed:
 		return
 
 	default:
