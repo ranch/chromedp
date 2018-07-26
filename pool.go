@@ -128,6 +128,11 @@ func (p *Pool) next(ctxt context.Context) *Res {
 	return r
 }
 
+// Size returns number of available resources.
+func (p *Pool) Size() int {
+	return len(p.res)
+}
+
 // Res is a pool resource.
 type Res struct {
 	p      *Pool
