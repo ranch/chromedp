@@ -147,18 +147,13 @@ type Res struct {
 func (r *Res) Release() error {
 	r.cancel()
 
-	var err error
-	if r.c != nil {
-		err = r.c.Wait()
-	}
-
 	defer r.p.debugf("pool released %d", r.port)
 
 	r.p.rw.Lock()
 	defer r.p.rw.Unlock()
 	delete(r.p.res, r.port)
 
-	return err
+	return nil
 }
 
 // Port returns the allocated port for the pool resource.
