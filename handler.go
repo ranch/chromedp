@@ -616,6 +616,8 @@ func (h *TargetHandler) pageEvent(ctxt context.Context, ev interface{}) {
 			h.loaded = nil
 		}
 		return
+	case *page.EventNavigatedWithinDocument:
+		return
 	case *page.EventFrameResized:
 		return
 	case *page.EventLifecycleEvent:
