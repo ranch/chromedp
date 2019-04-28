@@ -245,6 +245,10 @@ func (t *Target) pageEvent(ev interface{}) {
 		return
 	case *page.EventNavigatedWithinDocument:
 		return
+	case *page.EventJavascriptDialogOpening:
+		return
+	case *page.EventJavascriptDialogClosed:
+		return
 
 	default:
 		t.errf("unhandled page event %T", ev)

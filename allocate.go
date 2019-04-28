@@ -49,7 +49,7 @@ func setupExecAllocator(opts ...ExecAllocatorOption) *ExecAllocator {
 var DefaultExecAllocatorOptions = []ExecAllocatorOption{
 	NoFirstRun,
 	NoDefaultBrowserCheck,
-	Headless,
+	//Headless,
 }
 
 // NewExecAllocator creates a new context set up with an ExecAllocator, suitable
